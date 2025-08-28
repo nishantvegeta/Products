@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Products.Entities.Categories;
+using Products.Entities.Products;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -50,6 +53,8 @@ public class ProductsDbContext :
     // Tenant Management
     public DbSet<Tenant> Tenants { get; set; }
     public DbSet<TenantConnectionString> TenantConnectionStrings { get; set; }
+    public DbSet<Category> Categories { get; set; }
+    public DbSet<Product> Products { get; set; }
 
     #endregion
 
@@ -64,6 +69,30 @@ public class ProductsDbContext :
         base.OnModelCreating(builder);
 
         /* Include modules to your migration db context */
+
+        builder.Entity<Category>(b =>
+        {
+            b.ToTable("Categories");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(256);
+            b.Property(x => x.Description).HasMaxLength(1000);
+            b.Property(x => x.Code).HasMaxLength(50);
+            b.Property(x => x.IsActive).IsRequired();
+        });
+
+        builder.Entity<Product>(b =>
+        {
+            b.ToTable("Products");
+            b.ConfigureByConvention();
+            b.Property(x => x.Name).IsRequired().HasMaxLength(256);   
+            b.Property(x => x.Description).HasMaxLength(1000);    
+            b.Property(x => x.Price).HasColumnType("decimal(18,2)");
+            b.Property(x => x.StockQuantity).HasDefaultValue(0);
+            b.Property(x => x.IsActive).HasDefaultValue(true);
+            b.Property(x => x.ExpiryDate).IsRequired(false);
+            // Foreign key relationship
+            b.HasOne(x => x.Category).WithMany().HasForeignKey(x => x.CategoryId).OnDelete(DeleteBehavior.Cascade);
+        });
 
         builder.ConfigurePermissionManagement();
         builder.ConfigureSettingManagement();
