@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="ExcelMapper" Version="5.2.593" />
+    <PackageReference Include="CsvHelper" Version="33.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.3.0" />
     <PackageReference Include="Volo.Abp.ObjectExtending" Version="9.3.2" />
     <PackageReference Include="Volo.Abp.Account.Application.Contracts" Version="9.3.2" />
     <PackageReference Include="Volo.Abp.Identity.Application.Contracts" Version="9.3.2" />

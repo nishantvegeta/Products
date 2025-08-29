@@ -6,4 +6,5 @@ public class ProductFilter
 {
     public string? SearchKeyword { get; set; }
     public bool? IsActive { get; set; }
+    public string? ExportFormat { get; set; }
 }
