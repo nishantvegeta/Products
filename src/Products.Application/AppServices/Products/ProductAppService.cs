@@ -313,7 +313,6 @@ public class ProductAppService : ApplicationService, IProductAppService
                              Description = p.Description,
                              Price = p.Price,
                              StockQuantity = p.StockQuantity,
-                             CategoryId = p.CategoryId,
                              CategoryName = c.Name
                          })
                         .WhereIf(!string.IsNullOrWhiteSpace(filter.SearchKeyword),

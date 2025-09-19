@@ -67,17 +67,7 @@ public class BulkImportService(
                 var jsonContent = await reader.ReadToEndAsync();
 
                 var jsonObject = JObject.Parse(jsonContent);
-                var entityType = jsonObject["entityType"]?.ToString();
                 var dtoName = typeof(T).Name;
-                var expectedEntity = dtoName.EndsWith("ImportDto", StringComparison.OrdinalIgnoreCase)
-                    ? dtoName.Substring(0, dtoName.Length - "ImportDto".Length)
-                    : dtoName;
-
-                if (string.IsNullOrWhiteSpace(entityType) || !string.Equals(entityType, expectedEntity, StringComparison.OrdinalIgnoreCase))
-                {
-                    logger.LogWarning("BulkImportService: GetDataAsync - Invalid or missing entityType. Expected '{Expected}' but got '{Actual}'", expectedEntity, entityType ?? "null");
-                    throw new UserFriendlyException($"Invalid or missing entityType. Expected '{expectedEntity}'", "400");
-                }
 
                 var items = jsonObject["items"]?.ToObject<List<T>>();
 
@@ -177,7 +167,7 @@ public class BulkImportService(
         }
     }
 
-    public async Task<T> GetJsonDataAsync<T>(MemoryStream stream) where T : class
+    private async Task<T> GetJsonDataAsync<T>(MemoryStream stream) where T : class
     {
         try
         {

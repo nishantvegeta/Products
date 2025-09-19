@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 using OfficeOpenXml;
 using Products.ExportServices;
 using Volo.Abp.DependencyInjection;
+using Products.Constants;
 
-namespace Products.AppServices.ExcelServices;
+namespace Products.AppServices.ExportServices;
 
-public class ExcelService : IExportService, ITransientDependency
+public class ExportService : IExportService, ITransientDependency
 {
     public async Task<byte[]> ExportAsync<TData>(List<TData> data, string fileType)
     {
@@ -26,12 +27,18 @@ public class ExcelService : IExportService, ITransientDependency
 
     private byte[] ExportToJson<T>(List<T> data)
     {
-        var json = JsonSerializer.Serialize(data, new JsonSerializerOptions
+        var json = new JsonSerializerOptions
         {
             WriteIndented = true
-        });
+        };
 
-        return Encoding.UTF8.GetBytes(json);
+        var wrapped = new
+        {
+            items = data
+        };
+         var jsonData = JsonSerializer.Serialize(wrapped, json);
+
+        return Encoding.UTF8.GetBytes(jsonData);
     }
 
     private byte[] ExportToCsv<T>(List<T> data)
