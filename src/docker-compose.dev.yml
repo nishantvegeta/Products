@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  db-migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.Development
+    image: products-db-migrator:dev
+    container_name: products-db-migrator-dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development

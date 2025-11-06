@@ -1,0 +1,38 @@
+# Stage 1: Build and publish
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
+WORKDIR /src
+
+# Copy project files for restore caching (optimized layer caching)
+COPY ["src/Products.DbMigrator/Products.DbMigrator.csproj", "src/Products.DbMigrator/"]
+COPY ["src/Products.Application.Contracts/Products.Application.Contracts.csproj", "src/Products.Application.Contracts/"]
+COPY ["src/Products.EntityFrameworkCore/Products.EntityFrameworkCore.csproj", "src/Products.EntityFrameworkCore/"]
+COPY ["common.props", "."]
+COPY ["NuGet.Config", "."]
+
+# Restore packages using only .csproj files
+RUN dotnet restore "src/Products.DbMigrator/Products.DbMigrator.csproj" --no-cache --verbosity minimal
+
+# Copy source code
+COPY . .
+
+# Build and publish in one step
+WORKDIR /src/src/Products.DbMigrator
+RUN dotnet publish "Products.DbMigrator.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-restore --verbosity minimal
+
+# Stage 2: Runtime
+FROM mcr.microsoft.com/dotnet/runtime:9.0-alpine AS final
+WORKDIR /app
+
+# Copy published application
+COPY --from=build /app/publish .
+
+# Create non-root user for security
+RUN adduser -D -s /bin/sh appuser && chown -R appuser /app
+USER appuser
+
+# Set environment variables
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
+
+# Start the console application
+ENTRYPOINT ["dotnet", "Products.DbMigrator.dll"]

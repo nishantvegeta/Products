@@ -1,5 +1,5 @@
 # Stage 1: Build and publish
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 WORKDIR /src
 
 # Copy project files for restore caching
@@ -14,22 +14,24 @@ COPY ["src/Products.HttpApi.Client/Products.HttpApi.Client.csproj", "src/Product
 COPY ["common.props", "."]
 COPY ["NuGet.Config", "."]
 
-RUN dotnet restore "src/Products.Web/Products.Web.csproj"
+RUN dotnet restore "src/Products.Web/Products.Web.csproj" --no-cache --verbosity minimal
 
 COPY . .
 WORKDIR /src/src/Products.Web
-RUN dotnet publish "Products.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "Products.Web.csproj" -c Release -o /app/publish /p:UseAppHost=false --no-restore --verbosity minimal
 
 # Stage 2: Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS final
+FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 
-RUN useradd -m appuser
+# Create non-root user for security
+RUN adduser -D -s /bin/sh appuser && chown -R appuser /app
 USER appuser
 
 ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=1
 
 EXPOSE 8080
 ENTRYPOINT ["dotnet", "Products.Web.dll"]

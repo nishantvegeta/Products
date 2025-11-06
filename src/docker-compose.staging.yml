@@ -1,0 +1,11 @@
+version: '3.9'
+
+services:
+  db-migrator:
+    build:
+      context: .
+      dockerfile: Dockerfile.Staging
+    image: products-db-migrator:staging
+    container_name: products-db-migrator-staging
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
