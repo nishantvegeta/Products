@@ -1,0 +1,205 @@
+---
+apiVersion: GitLab issues
+items:
+  - title: "US-1: Create Task - Project Manager can create new tasks"
+    description: |
+      ## User Story
+      As a project manager, I want to create a new task with a title, description, assignee, and due date so that team members know what work needs to be done.
+
+      ## Acceptance Criteria
+      - Task must have a title (required), description (optional), assignee, and due date
+      - On save, the task appears immediately in the task list
+      - A confirmation message is shown after successful creation
+
+      ## Technical Tasks
+
+      ### Backend
+      - [ ] Create Task entity/model with properties: Id, Title, Description, AssigneeId, DueDate, Status, CreatedAt, UpdatedAt
+      - [ ] Create TaskDto for input/output
+      - [ ] Implement ICreateTaskAppService with CreateAsync method
+      - [ ] Add validation: Title required, DueDate must be future date, AssigneeId must exist
+      - [ ] Add database migration for Tasks table
+      - [ ] Create Task repository/extensions for EF Core
+
+      ### API
+      - [ ] Add POST /api/app/tasks endpoint
+      - [ ] Configure authorization: Require 'Tasks.Create' permission
+      - [ ] Add API controller with proper error handling
+      - [ ] Add request/response logging
+
+      ### Frontend
+      - [ ] Create TaskCreateModal component/page
+      - [ ] Build form with fields: Title (required), Description (textarea), Assignee (dropdown), Due Date (date picker)
+      - [ ] Implement form validation
+      - [ ] Add success/error message notifications
+      - [ ] Refresh task list after successful creation
+
+      ### Testing
+      - [ ] Unit tests for TaskAppService creation logic
+      - [ ] Integration tests for POST endpoint
+      - [ ] E2E tests for task creation UI flow
+
+      ## Labels
+      - `user-story`
+      - `task-management`
+      - `backend`
+      - `frontend`
+      - `api`
+
+      ## Weight
+      8
+
+  - title: "US-2: Read Tasks - View task list and details"
+    description: |
+      ## User Story
+      As a project manager, I want to view a list of all tasks and open any task to see its full details so that I can monitor project progress at a glance.
+
+      ## Acceptance Criteria
+      - Task list shows all tasks with summary info (title, assignee, due date, status)
+      - List supports pagination if there are many tasks
+      - Clicking a task opens detailed view with all fields
+      - Task details show complete information including description and history
+      - Optional: Filter/search by assignee, status, or text
+
+      ## Technical Tasks
+
+      ### Backend
+      - [ ] Implement GetListAsync with pagination support
+      - [ ] Implement GetAsync(id) for task details
+      - -[ ] Add filtering capabilities (by assignee, status, date range)
+      - [ ] Create TaskDto for list view (summary fields)
+      - [ ] Create TaskDetailDto for detail view (all fields)
+      - [ ] Add eager loading for related entities (assignee)
+
+      ### API
+      - [ ] Add GET /api/app/tasks endpoint (with pagination and filters)
+      - [ ] Add GET /api/app/tasks/{id} endpoint
+      - [ ] Configure proper caching headers for list endpoint
+
+      ### Frontend
+      - [ ] Create Tasks page/list component with table/grid view
+      - [ ] Display columns: Title, Assignee (avatar+name), Due Date, Status badge
+      - [ ] Implement pagination controls
+      - [ ] Add click-to-navigate to task detail view
+      - [ ] Create TaskDetail page with all fields
+      - [ ] Add "Back to list" navigation
+      - [ ] Optional: Add filter/sidebar panel
+
+      ### Testing
+      - [ ] Unit tests for GetListAsync with pagination
+      - [ ] Unit tests for GetAsync with valid/invalid IDs
+      - [ ] Integration tests for GET endpoints
+      - [ ] E2E tests for task list and detail views
+
+      ## Labels
+      - `user-story`
+      - `task-management`
+      - `backend`
+      - `frontend`
+      - `api`
+
+      ## Weight
+      6
+
+  - title: "US-3: Update Task - Edit task status, assignee, and due date"
+    description: |
+      ## User Story
+      As a project manager, I want to edit an existing task to update its status, reassign it, or change the due date so that the task reflects current priorities.
+
+      ## Acceptance Criteria
+      - Task can be edited from detail view or inline in list
+      - Status can be changed (e.g., To Do, In Progress, Done)
+      - Assignee can be reassigned to another team member
+      - Due date can be modified
+      - Changes are saved and reflected immediately
+      - Edit history is tracked (who changed what and when)
+
+      ## Technical Tasks
+
+      ### Backend
+      - [ ] Add Status enum (ToDo, InProgress, Done, Blocked, Cancelled)
+      - [ ] Add EditHistory tracking (audit fields or separate table)
+      - [ ] Implement UpdateAsync(id, input) in TaskAppService
+      - [ ] Add optimistic concurrency control with RowVersion
+      - [ ] Add permission check: Users can only edit tasks assigned to them or if they have manager role
+
+      ### API
+      - [ ] Add PUT /api/app/tasks/{id} endpoint
+      - [ ] Add PATCH /api/app/tasks/{id} for partial updates
+      - [ ] Return updated task in response
+      - [ ] Handle concurrency conflicts with 409 response
+
+      ### Frontend
+      - [ ] Add Edit button on task detail page
+      - [ ] Create TaskEditModal with form pre-filled with current values
+      - [ ] Enable inline editing in task list (optional)
+      - [ ] Show status as dropdown with color coding
+      - [ ] Show confirmation dialog before unsaved changes
+      - [ ] Display success/error notifications
+
+      ### Testing
+      - [ ] Unit tests for UpdateAsync with valid/invalid data
+      - [ ] Concurrency conflict tests
+      - [ ] Authorization tests (user can/cannot edit)
+      - [ ] Integration tests for PUT/PATCH endpoints
+      - [ ] E2E tests for edit flow
+
+      ## Labels
+      - `user-story`
+      - `task-management`
+      - `backend`
+      - `frontend`
+      - `api`
+
+      ## Weight
+      7
+
+  - title: "US-4: Delete Task - Remove irrelevant tasks"
+    description: |
+      ## User Story
+      As a project manager, I want to delete a task that is no longer relevant so that the project board stays clean and accurate.
+
+      ## Acceptance Criteria
+      - Delete option available from task detail view and list
+      - Confirmation dialog before deletion (prevent accidental clicks)
+      - After deletion, task is removed from list immediately
+      - Deletion is permanent (or soft delete with archive option)
+      - Appropriate error message if deletion fails
+
+      ## Technical Tasks
+
+      ### Backend
+      - [ ] Implement soft delete by default (IsDeleted flag)
+      - [ ] Add DeleteAsync(id) method in TaskAppService
+      - [ ] Check permissions: Only managers or task creator can delete
+      - [ ] Add cascade handling for related records (if any)
+
+      ### API
+      - [ ] Add DELETE /api/app/tasks/{id} endpoint
+      - [ ] Return 204 No Content on success
+      - [ ] Return 404 if task not found
+      - [ ] Return 403 if user lacks permission
+
+      ### Frontend
+      - [ ] Add Delete button on task detail page
+      - [ ] Add delete action in task list context menu
+      - [ ] Show confirmation dialog: "Are you sure you want to delete this task?"
+      - [ ] Remove deleted task from UI immediately
+      - [ ] Show success toast: "Task deleted successfully"
+      - [ ] Refresh task list after deletion
+
+      ### Testing
+      - [ ] Unit tests for DeleteAsync with valid/invalid IDs
+      - [ ] Authorization tests (permission denied scenarios)
+      - [ ] Integration tests for DELETE endpoint
+      - [ ] E2E tests for delete flow with confirmation
+
+      ## Labels
+      - `user-story`
+      - `task-management`
+      - `backend`
+      - `frontend`
+      - `api`
+
+      ## Weight
+      5
