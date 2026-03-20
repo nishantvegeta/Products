@@ -1,0 +1,97 @@
+# Feature Specification — Customer Address Management
+
+**Version:** 1.0
+**Date:** 2026-03-20
+**Status:** Draft
+**Source:** requirements.md
+
+---
+
+## Summary
+
+This feature enables customers to create, view, update, delete, and select multiple saved addresses. Customers will be able to designate default billing and shipping addresses, streamlining the order creation process by allowing address reuse instead of re-entering information for each order. The system solves the problem of repetitive address entry and provides a more efficient ordering experience.
+
+---
+
+## Goals
+
+| # | Goal | Success Indicator |
+|---|------|-------------------|
+| 1 | Enable customers to store multiple addresses for billing and shipping | Customers can create and manage a personal address book |
+| 2 | Support default address selection for order workflows | Order creation allows selection from saved addresses with clear default behavior |
+| 3 | Provide full CRUD capabilities for address management | Customers can create, read, update, and delete their addresses |
+
+---
+
+## Actors
+
+| Actor | Role in This Feature | Access Level |
+|-------|----------------------|--------------|
+| Customer | Primary user who creates, manages, and selects addresses for orders | Owner (can only access own addresses) |
+| System Administrator | May view and manage customer addresses for support or admin purposes | Admin (full access to all addresses) |
+
+---
+
+## Scope
+
+**In Scope:**
+- Address entity linked to Customer (one-to-many relationship)
+- Address DTOs (Create, Update, Get, List) and IAddressAppService
+- CRUD endpoints for customer addresses
+- Default billing and shipping address logic per customer
+- Validation for required address fields (street, city, state, zip, country, etc.)
+- Integration with order creation to allow selection of saved addresses
+- Unit and integration tests for address CRUD and default selection behavior
+
+**Out of Scope:**
+- International address auto-completion or validation services
+- Address verification against third-party postal APIs
+- Multi-customer shared addresses
+- Address history/audit trail beyond standard ABP auditing
+- Mobile-specific features (this is backend-only)
+
+---
+
+## Key Business Rules
+
+| Rule ID | Rule Description |
+|---------|------------------|
+| BR-001 | Each address must be associated with exactly one customer (cannot exist without customer) |
+| BR-002 | A customer may have zero or many addresses |
+| BR-003 | Each customer may designate at most one default billing address |
+| BR-004 | Each customer may designate at most one default shipping address |
+| BR-005 | The default billing and shipping addresses may be the same address |
+| BR-006 | Required address fields: street address, city, state/province, postal code, country, and address type (billing/shipping) |
+| BR-007 | Customers can only access and manage their own addresses unless they have administrator privileges |
+| BR-008 | When creating an order, customers may select any of their saved addresses or enter a new one-time address |
+
+---
+
+## Assumptions
+
+- The Customer entity already exists in the system (from previous implementation)
+- The order creation workflow will be updated to consume saved addresses but this integration is part of this feature
+- Address data model should include common fields: street line1, street line2 (optional), city, state, postal code, country, phone number (optional)
+- The system uses ABP Framework patterns (Repository pattern, ApplicationService, DTOs)
+- Authorization/permissions system is already in place to enforce customer-specific access
+- The feature is implemented as an Application Service with RESTful API endpoints
+- Addresses follow standard soft-delete pattern (IsDeleted flag) via ABP
+
+---
+
+## Open Questions
+
+| # | Question | Impact if Unresolved |
+|---|----------|----------------------|
+| 1 | What is the maximum number of addresses a customer can store? | Need to decide if there's a limit or if it's unlimited |
+| 2 | Should there be address type validation (billing vs shipping) or can any address be used for both? | Affects UI/API design and business rule enforcement |
+| 3 | Do we need address normalization/formatting based on country? | Could affect data consistency and validation complexity |
+| 4 | What happens when an address is referenced by existing orders and then deleted? | Need to decide on cascade behavior or soft-delete only |
+| 5 | Should customers be able to set an address as default at creation time or only via separate update? | Affects API design and user experience |
+| 6 | Are there specific validation rules per country (e.g., postal code format)? | Would require additional validation logic or external service |
+| 7 | Is there a need for address categories/labels beyond billing/shipping (e.g., "Home", "Work")? | Could be a future enhancement but affects data model extensibility |
+
+---
+
+*Generated by requirements-to-feature-spec skill*
+*Next: feed this file into the feature-spec-to-user-stories skill*
