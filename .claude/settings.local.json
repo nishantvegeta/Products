@@ -4,7 +4,9 @@
       "mcp__gitlab__create_issue",
       "mcp__gitlab__list_issues",
       "mcp__gitlab__get_users",
-      "mcp__gitlab__list_project_members"
+      "mcp__gitlab__list_project_members",
+      "mcp__gitlab__get_issue",
+      "mcp__gitlab__update_issue"
     ]
   }
 }
