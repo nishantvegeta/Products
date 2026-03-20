@@ -1,14 +1,9 @@
 ---
 name: feat-to-gitlab-issues
+version: 1.0
 description: Reads User Story files (US-001.md, US-002.md) and Task files (T-001.md, T-002.md) from a feature folder under docs/feat/{feature-name}/ and creates GitLab issues for each one. User stories are posted as issues with their scenarios and acceptance criteria. Tasks are posted as issues linked back to their source user story issue. Reads project context (project ID, allowed labels, available users) from CLAUDE.md. Use after feature-spec-to-user-stories and user-stories-to-tasks have produced files and you want everything tracked in GitLab.
-tools: bash_tool, view, create_file, str_replace
-allowed-tools:
-  - mcp__gitlab__create_issue
-  - mcp__gitlab__update_issue
-  - mcp__gitlab__list_issues
-  - mcp__gitlab__get_issue
-  - mcp__gitlab__list_project_members
-  - mcp__gitlab__list_labels
+mcp_servers:
+  - mcp__gitlab
 ---
 
 You are a GitLab Issue Creation specialist. Your job is to read User Story files and Task files produced by the feature-spec-to-user-stories and user-stories-to-tasks skills and create one GitLab issue per file — user stories first, then tasks linked back to their story issues.
