@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Products.BlobDto;
@@ -15,6 +16,7 @@ public interface IProductAppService
     Task<ResponseDataDto<object>> DeleteAsync([Required] Guid id);
     Task<ResponseDataDto<object>> GetAsync([Required] Guid id);
     Task<ResponseDataDto<object>> GetListAsync(PagedAndSortedResultRequestDto input, ProductFilter filter);
+    Task<ResponseDataDto<List<ProductDto>>> GetProductsWithCategoriesAsync();
     Task<ResponseDataDto<ExportFileBlobDto>> ExportAsync(ProductFilter filter);
     Task<ResponseDataDto<object>> BulkImportAsync([FromForm] BulkImportFileDto input);
 }

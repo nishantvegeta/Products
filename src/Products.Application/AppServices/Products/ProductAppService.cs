@@ -293,6 +293,54 @@ public class ProductAppService : ApplicationService, IProductAppService
         }
     }
 
+    [HttpGet("with-categories")]
+    public async Task<ResponseDataDto<List<ProductDto>>> GetProductsWithCategoriesAsync()
+    {
+        try
+        {
+            _logger.LogInformation("GetProductsWithCategoriesAsync method called");
+
+            var products = await _productRepository.GetQueryableAsync();
+            var categories = await _categoryRepository.GetQueryableAsync();
+
+            var query = from p in products
+                        join c in categories on p.CategoryId equals c.Id into productCategories
+                        from c in productCategories.DefaultIfEmpty()
+                        select new ProductDto
+                        {
+                            Id = p.Id,
+                            Name = p.Name,
+                            Description = p.Description,
+                            Price = p.Price,
+                            StockQuantity = p.StockQuantity,
+                            IsActive = p.IsActive,
+                            ExpiryDate = p.ExpiryDate,
+                            CategoryId = p.CategoryId,
+                            CategoryName = c != null ? c.Name : null
+                        };
+
+            var result = await AsyncExecuter.ToListAsync(query);
+
+            return new ResponseDataDto<List<ProductDto>>
+            {
+                Success = true,
+                Message = "Products with categories retrieved successfully",
+                Data = result,
+                Code = 200
+            };
+        }
+        catch (UserFriendlyException ex)
+        {
+            _logger.LogWarning(ex, "A user-friendly error occurred while retrieving products with categories: {Message}", ex.Message);
+            throw;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "An error occurred while retrieving products with categories.");
+            throw new UserFriendlyException("An unexpected error occurred. Please try again later.");
+        }
+    }
+
     [HttpGet]
     public async Task<ResponseDataDto<ExportFileBlobDto>> ExportAsync(ProductFilter filter)
     {
