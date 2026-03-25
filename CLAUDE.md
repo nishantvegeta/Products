@@ -5,10 +5,10 @@ This file contains project-specific instructions and conventions for Claude Code
 ## Project Overview
 
 - **Project Name:** ACMS (Administrative Case Management System)
-- **GitLab Project:** `root/acms` (ID: 1)
+- **GitLab Project:** `root/user-stories` (ID: 3)
 - **Primary Module:** Task Management
 - **Architecture:** ABP Framework with Domain-Driven Design
-- **Repository:** https://gitlab.local:8080/root/acms
+- **Repository:** https://gitlab.local:8080/root/user-stories
 
 ## Technology Stack
 
@@ -360,7 +360,18 @@ When working on this project:
 9. Use meaningful branch names descriptive of the feature
 10. Always run tests before committing
 
-## CLAUDE.md Specific Directives
+### Code Navigation and Analysis
+
+Prefer LSP (Language Server Protocol) operations over Grep/Read for code navigation — it's faster, more precise, and avoids reading entire files:
+
+- **`workspaceSymbol`** - Find where something is defined across the codebase
+- **`findReferences`** - See all usages of a symbol across the codebase
+- **`goToDefinition` / `goToImplementation`** - Jump directly to source code
+- **`hover`** - Get type info and documentation without reading the file
+
+Use **Grep** only when LSP isn't available or for text/pattern searches (comments, strings, configuration).
+
+**After writing or editing code**, always check LSP diagnostics and fix any errors before proceeding.
 
 ### When generating code:
 - Generate complete, compilable code following ABP patterns
