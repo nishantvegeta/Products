@@ -255,7 +255,7 @@ mcp__gitlab__create_issue(
 )
 ```
 
-**Store the returned GitLab issue number immediately** (e.g. `#10`) — task issues will reference this.
+**Store the returned GitLab issue IID immediately** (e.g. `10`) — task issues will reference this.
 
 ### User Story Issue Description Template
 
@@ -315,9 +315,9 @@ Then {result}
 
 ---
 
-## Step 6 — Create Task Issues
+## Step 6 — Create Task Issues and Link to Stories
 
-After all user story issues are created and their GitLab issue numbers are known, post all T-*.md files.
+After all user story issues are created and their GitLab issue IIDs are known, post all T-*.md files.
 
 ### Creation Order
 
@@ -343,7 +343,7 @@ mcp__gitlab__create_issue(
 
 **Layer:** {layer}
 **Estimate:** {estimate}
-**Linked User Story:** #{gitlab issue number of the linked US-ID} — {story title}
+**Linked User Story:** #{gitlab issue iid of the linked US-ID} — {story title}
 
 ---
 
@@ -363,7 +363,28 @@ mcp__gitlab__create_issue(
 *User Story: docs/feat/{feature-name}/{US-ID}.md*
 ```
 
-The `Linked User Story` line must use the real GitLab issue number (e.g. `#10`) obtained in Step 5 — not the US-ID string.
+The `Linked User Story` line must use the real GitLab issue IID (e.g. `#10`) obtained in Step 5 — not the US-ID string.
+
+### Create GitLab Issue Link
+
+**Immediately after creating or updating a task issue**, create a proper GitLab link to the parent user story:
+
+```
+mcp__gitlab__create_issue_link(
+  project_id:      {from CLAUDE.md},
+  issue_iid:       {task issue iid},
+  target_issue_iid: {parent story issue iid},
+  target_project_id: {from CLAUDE.md},
+  link_type:       "relates_to"
+)
+```
+
+This creates the relationship that appears in GitLab's "Linked items" section. The `issue_iid` is the task's issue number, and `target_issue_iid` is the user story's issue number. Both `project_id` and `target_project_id` are required parameters even when linking within the same project.
+
+If the link already exists (e.g., when updating an existing task issue), the API will return an error. Handle gracefully by:
+- First checking existing links with `mcp__gitlab__list_issue_links(project_id, issue_iid)`
+- Only create if link doesn't exist
+- Or catch the error and continue (link already present)
 
 ---
 
@@ -383,6 +404,8 @@ mcp__gitlab__update_issue(
 )
 ```
 
+**After updating a task issue**, ensure the GitLab link to the parent user story exists by calling `mcp__gitlab__create_issue_link` (same as Step 6). This ensures the linkage is present even for pre-existing issues.
+
 ---
 
 ## Step 8 — Print Summary
@@ -401,20 +424,22 @@ User Story Issues:
   #{n}  US-002 — {title}
 
 Task Issues:
-  #{n}  T-001 — {title}   → linked to #{story issue}
-  #{n}  T-002 — {title}   → linked to #{story issue}
-  #{n}  T-003 — {title}   → linked to #{story issue}
+  #{n}  T-001 — {title}   → linked to #{story issue} (GitLab "Linked items")
+  #{n}  T-002 — {title}   → linked to #{story issue} (GitLab "Linked items")
+  #{n}  T-003 — {title}   → linked to #{story issue} (GitLab "Linked items")
   ...
 
 Summary:
   User Stories posted:  {n}
   Tasks posted:         {n}
   Issues updated:       {n}  (already existed — updated)
+  Issue links created:  {n}  (tasks linked to stories via GitLab API)
   Total issues:         {n}
 
 Validation:
   ✓ All labels valid
   ✓ All assignees resolved
+  ✓ All task-story links created
 
 View all issues:
   https://gitlab.com/{namespace}/{repo}/-/issues
@@ -436,3 +461,5 @@ View all issues:
 | US-ID in task file has no matching story issue | Flag in summary — link manually after creation |
 | Estimate missing from task file | Default weight to 1, flag in summary |
 | Feature folder has no US-*.md files | Stop and report — user stories must be posted before tasks |
+| Issue link already exists | Skip creation silently (link is already present) |
+| Issue link creation fails | Flag in summary but do not stop — issues are created, link needs manual follow-up |
