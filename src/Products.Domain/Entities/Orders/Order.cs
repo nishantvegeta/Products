@@ -1,4 +1,5 @@
 using System;
+using Products.Entities.Customers;
 using Volo.Abp.Domain.Entities.Auditing;
 
 namespace Products.Entities.Orders;

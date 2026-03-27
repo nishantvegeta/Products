@@ -1,0 +1,38 @@
+{
+  "name": "agentic-flow",
+  "owner": {
+    "name": "Nishant Kumpakha",
+    "email": "nishantkumpakha03@gmail.com"
+  },
+  "homepage": "https://github.com/nishantvegeta/Products",
+  "repository": "https://github.com/nishantvegeta/Products",
+  "license": "MIT",
+  "metadata": {
+    "version": "1.0.0",
+    "description": "Agentic development workflow plugins for intelligent task planning, breakdown, and dependency mapping."
+  },
+  "plugins": [
+    {
+      "name": "agentic-flow",
+      "source": "./plugins/agentic-flow",
+      "description": "Agentic development workflow plugin with sub-agents and skills for intelligent task planning and breakdown.",
+      "version": "1.0.0",
+      "author": {
+        "name": "Nishant Kumpakha",
+        "email": "nishantkumpakha03@gmail.com"
+      },
+      "homepage": "https://github.com/nishantvegeta/Products",
+      "repository": "https://github.com/nishantvegeta/Products",
+      "license": "MIT",
+      "keywords": [
+        "task-planning",
+        "project-management",
+        "productivity",
+        "developer-tools",
+        "agentic",
+        "ai-assistant"
+      ],
+      "category": "productivity"
+    }
+  ]
+}

@@ -5,10 +5,10 @@ This file contains project-specific instructions and conventions for Claude Code
 ## Project Overview
 
 - **Project Name:** ACMS (Administrative Case Management System)
-- **GitLab Project:** `root/user-stories` (ID: 3)
+- **GitLab Project:** `root/biometric` (ID: 4)
 - **Primary Module:** Task Management
 - **Architecture:** ABP Framework with Domain-Driven Design
-- **Repository:** https://gitlab.local:8080/root/user-stories
+- **Repository:** https://gitlab.local:8080/root/biometric
 
 ## Technology Stack
 

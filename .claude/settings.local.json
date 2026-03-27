@@ -8,7 +8,14 @@
       "mcp__gitlab__get_issue",
       "mcp__gitlab__update_issue",
       "Bash(ls -1 US-*.md T-*.md)",
-      "mcp__gitlab__create_issue_link"
+      "mcp__gitlab__create_issue_link",
+      "Bash(git:*)",
+      "Bash(find C:UsersUserProducts -type f -name *.py -path *mcp*gitlab*)",
+      "Bash(jq -r \".[] | select\\(.title | startswith\\(\"\"T-\"\"\\)\\) | {task_iid: .iid, title: .title, linked_story: .description | capture\\(\"\"Linked User Story: #\\([0-9]+\\)\"\"\\) | .linked_story}\" C:UsersUser.claudeprojectsC--Users-User-Products0e206b73-a006-4711-9f2a-1475a5a17740tool-resultscall_6019977916a5457984f14921.json)",
+      "mcp__gitlab__list_issue_links",
+      "Bash(sed s/\"\"//g)",
+      "Read(//tmp/**)",
+      "Bash(ls -1 T-*.md)"
     ]
   }
 }

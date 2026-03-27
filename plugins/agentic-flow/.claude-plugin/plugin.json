@@ -1,0 +1,23 @@
+{
+  "name": "agentic-flow",
+  "version": "1.0.0",
+  "description": "Agentic development workflow plugin with sub-agents and skills for intelligent task planning and breakdown.",
+  "author": {
+    "name": "Nishant Kumpakha",
+    "email": "nishantkumpakha03@gmail.com",
+    "url": "https://github.com/nishantvegeta"
+  },
+  "homepage": "https://github.com/nishantvegeta/Products",
+  "repository": "https://github.com/nishantvegeta/Products",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "task-planning",
+    "project-management",
+    "productivity",
+    "developer-tools",
+    "agentic",
+    "ai-assistant"
+  ]
+}

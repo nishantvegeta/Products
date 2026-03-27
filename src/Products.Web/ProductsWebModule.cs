@@ -40,6 +40,9 @@ using Volo.Abp.UI.Navigation.Urls;
 using Volo.Abp.UI;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace Products.Web;
 
@@ -116,11 +119,33 @@ public class ProductsWebModule : AbpModule
 
     private void ConfigureAuthentication(ServiceConfigurationContext context)
     {
+        var configuration = context.Services.GetConfiguration();
+        
         context.Services.ForwardIdentityAuthenticationForBearer(OpenIddictValidationAspNetCoreDefaults.AuthenticationScheme);
         context.Services.Configure<AbpClaimsPrincipalFactoryOptions>(options =>
         {
             options.IsDynamicClaimsEnabled = true;
         });
+
+        // Configure ngage external login provider
+        context.Services.AddAuthentication()
+            .AddOpenIdConnect("ngage", options =>
+            {
+                options.Authority = configuration["ngage:Authority"];
+                options.ClientId = configuration["ngage:ClientId"];
+                options.ClientSecret = configuration["ngage:ClientSecret"];
+                options.ResponseType = "code";
+                options.SaveTokens = true;
+                options.GetClaimsFromUserInfoEndpoint = true;
+                
+                // Standard scopes
+                options.Scope.Add("openid");
+                options.Scope.Add("profile");
+                options.Scope.Add("email");
+                
+                // Handle sign-in scheme for external login
+                options.SignInScheme = IdentityConstants.ExternalScheme;
+            });
     }
 
     private void ConfigureUrls(IConfiguration configuration)
